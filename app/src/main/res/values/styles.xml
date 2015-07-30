@@ -3,7 +3,7 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
+
     </style>
 
     <!--Button -->
@@ -15,4 +15,5 @@
         <item name="bb_roundedCorners">true</item>
         <item name="bb_type">primary</item>
     </style>
+
 </resources>

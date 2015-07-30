@@ -29,6 +29,7 @@ public class MainActivity extends ActionBarActivity implements TV_Remote.OnFragm
      */
     private NavigationDrawerFragment mNavigationDrawerFragment;
 
+
     /**
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
@@ -42,6 +43,13 @@ public class MainActivity extends ActionBarActivity implements TV_Remote.OnFragm
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
+
+        //Create Runnable for launching the new activity from create event button
+        Runnable create_launcher = new Runnable() {
+            @Override
+            public void run() {
+                //IntentProtocol.launchCreateEvent(MainActivity.this);
+            }};
 
         // Set up the drawer.
         mNavigationDrawerFragment.setUp(
