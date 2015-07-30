@@ -38,21 +38,7 @@
     <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="app: com.remote" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4ee447a2-51c3-4471-8e94-5cb8e337e667" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/android_iconify_1_0_8.xml" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/button/.gitignore" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/button/build.gradle" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/button/button.iml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/button/src/main/java/com/example/BootstrapButton.java" afterPath="" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/Remote.iml" afterPath="$PROJECT_DIR$/remote.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/remote/MainActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/remote/MainActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/app.iml" afterPath="$PROJECT_DIR$/app/app.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build.gradle" afterPath="$PROJECT_DIR$/app/build.gradle" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/layout/fragment_tv_remote.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout/fragment_tv_remote.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/settings.gradle" afterPath="$PROJECT_DIR$/settings.gradle" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/values/styles.xml" afterPath="$PROJECT_DIR$/app/src/main/res/values/styles.xml" />
-    </list>
+    <list default="true" id="4ee447a2-51c3-4471-8e94-5cb8e337e667" name="Default" comment="" />
     <ignored path="Remote.iws" />
     <ignored path=".idea/workspace.xml" />
     <ignored path="$PROJECT_DIR$/.gradle/" />
