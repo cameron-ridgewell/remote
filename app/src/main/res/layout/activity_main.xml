@@ -10,20 +10,20 @@
          space available using match_parent in both dimensions. -->
     <FrameLayout android:id="@+id/container" android:layout_width="match_parent"
         android:layout_height="match_parent"/>
-<!--
+
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:fab="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <com.github.clans.fab.FloatingActionMenu
-            android:id="@+id/menu3"
+            android:id="@+id/power_menu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
             fab:menu_icon="@drawable/power_off_25"
-            fab:menu_animationDelayPerItem="200"
-            fab:menu_colorNormal="@color/success_color_light"
+            fab:menu_animationDelayPerItem="0"
+            fab:menu_colorNormal="@color/success_color"
             fab:menu_colorPressed="@color/success_color_dark"
             fab:menu_colorRipple="#1B5E20"
             fab:menu_labels_maxLines="2"
@@ -33,21 +33,30 @@
             <com.github.clans.fab.FloatingActionButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:id="@+id/AVPower"
                 android:src="@drawable/power_off_25_music"
                 fab:fab_label="A/V Receiver"
+                fab:fab_colorNormal="@color/success_color_dark"
+                fab:fab_colorPressed="@color/success_color_dark"
                 />
 
             <com.github.clans.fab.FloatingActionButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:id="@+id/CMPower"
                 android:src="@drawable/power_off_25_comcast"
-                fab:fab_label="Cable Box"
+                fab:fab_colorNormal="@color/success_color_dark"
+                fab:fab_colorPressed="@color/success_color_dark"
+                fab:fab_label="Cable"
                 />
 
             <com.github.clans.fab.FloatingActionButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:id="@+id/TVPower"
                 android:src="@drawable/power_off_25_tv"
+                fab:fab_colorNormal="@color/success_color_dark"
+                fab:fab_colorPressed="@color/success_color_dark"
                 fab:fab_label="Television"
                 />
 
@@ -55,7 +64,7 @@
 
     </RelativeLayout>
 
--->
+
     <!-- android:layout_gravity="start" tells DrawerLayout to treat
          this as a sliding drawer on the left side for left-to-right
          languages and on the right side for right-to-left languages.

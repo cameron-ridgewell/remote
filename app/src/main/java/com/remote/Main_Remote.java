@@ -12,12 +12,12 @@ import android.view.ViewGroup;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link TV_Remote.OnFragmentInteractionListener} interface
+ * {@link Main_Remote.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link TV_Remote#newInstance} factory method to
+ * Use the {@link Main_Remote#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class TV_Remote extends Fragment {
+public class Main_Remote extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
@@ -27,14 +27,14 @@ public class TV_Remote extends Fragment {
      *
      * @return A new instance of fragment TV_Remote.
      */
-    public static TV_Remote newInstance() {
-        TV_Remote fragment = new TV_Remote();
+    public static Main_Remote newInstance() {
+        Main_Remote fragment = new Main_Remote();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
     }
 
-    public TV_Remote() {
+    public Main_Remote() {
         // Required empty public constructor
     }
 
@@ -49,7 +49,7 @@ public class TV_Remote extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_tv_remote, container, false);
+        return inflater.inflate(R.layout.fragment_main_remote, container, false);
     }
 
     // TODO: Rename method, update argument and hook method into UI event

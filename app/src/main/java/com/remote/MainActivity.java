@@ -6,22 +6,20 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.content.Context;
-import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
-import android.widget.ArrayAdapter;
-import android.widget.TextView;
+
+import com.github.clans.fab.FloatingActionButton;
+import com.github.clans.fab.FloatingActionMenu;
+import com.remote.utilities.ServerRequest;
 
 
-public class MainActivity extends ActionBarActivity implements TV_Remote.OnFragmentInteractionListener,
+public class MainActivity extends ActionBarActivity implements Main_Remote.OnFragmentInteractionListener,
         NavigationDrawerFragment.NavigationDrawerCallbacks {
 
     /**
@@ -29,6 +27,12 @@ public class MainActivity extends ActionBarActivity implements TV_Remote.OnFragm
      */
     private NavigationDrawerFragment mNavigationDrawerFragment;
 
+    private FloatingActionMenu power_menu;
+    private FloatingActionButton TVPower;
+    private FloatingActionButton AVPower;
+    private FloatingActionButton CMPower;
+
+    private ServerRequest svreq = ServerRequest.getInstance();
 
     /**
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
@@ -55,6 +59,8 @@ public class MainActivity extends ActionBarActivity implements TV_Remote.OnFragm
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
+
+        powerMenuSetup();
     }
 
     @Override
@@ -81,6 +87,9 @@ public class MainActivity extends ActionBarActivity implements TV_Remote.OnFragm
                 break;
             case 3:
                 mTitle = getString(R.string.title_section3);
+                break;
+            case 4:
+                mTitle = getString(R.string.title_section4);
                 break;
         }
     }
@@ -139,8 +148,9 @@ public class MainActivity extends ActionBarActivity implements TV_Remote.OnFragm
             Fragment activeFragment;
             switch (sectionNumber) {
                 case 1:
-                    activeFragment = new TV_Remote();
+                    activeFragment = new Main_Remote();
                     break;
+
                 default:
                     activeFragment = new Fragment();
             }
@@ -166,5 +176,47 @@ public class MainActivity extends ActionBarActivity implements TV_Remote.OnFragm
             ((MainActivity) activity).onSectionAttached(
                     getArguments().getInt(ARG_SECTION_NUMBER));
         }
+    }
+
+    private void powerMenuSetup() {
+        power_menu = (FloatingActionMenu) findViewById(R.id.power_menu);
+        TVPower = (FloatingActionButton) findViewById(R.id.TVPower);
+        AVPower = (FloatingActionButton) findViewById(R.id.AVPower);
+        CMPower = (FloatingActionButton) findViewById(R.id.CMPower);
+
+        power_menu.setOnMenuToggleListener(new FloatingActionMenu.OnMenuToggleListener() {
+            @Override
+            public void onMenuToggle(boolean opened) {
+                if (opened) {
+                    power_menu.setMenuButtonColorNormal(getResources()
+                            .getColor(R.color.success_color_light));
+                } else {
+                    power_menu.setMenuButtonColorNormal(getResources()
+                            .getColor(R.color.success_color));
+                }
+            }
+        });
+
+        TVPower.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                svreq.toggleTVPower();
+                power_menu.close(true);
+            }
+        });
+        AVPower.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                svreq.toggleAVPower();
+                power_menu.close(true);
+            }
+        });
+        CMPower.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                svreq.toggleCMPower();
+                power_menu.close(true);
+            }
+        });
     }
 }

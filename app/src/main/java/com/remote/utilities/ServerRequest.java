@@ -39,19 +39,73 @@ public class ServerRequest{
         }
     }
 
-    public void addUser(final int user) {
+    public void toggleTVPower() {
         Callable c = new Callable() {
             @Override
             public String call() {
-                svc.addUser(user, new Callback<String>() {
+                svc.toggleTVPower(new Callback<String>() {
                     @Override
                     public void success(String user, Response response) {
-                        Log.v("Retrofit Success", "User response");
+                        Log.v("Retrofit Success", "TV Power Success");
                     }
 
                     @Override
                     public void failure(RetrofitError error) {
-                        Log.e("Retrofit Error", "addUser Failed");
+                        Log.e("TV Power Failed", error.getMessage());
+                    }
+                });
+                return "";
+            }
+        };
+        try {
+            exec.submit(c).get();
+        } catch (ExecutionException e) {
+            Log.e("Interrupted Exception", e.getMessage());
+        } catch (InterruptedException e) {
+            Log.e("Execution Exception", e.getMessage());
+        }
+    }
+
+    public void toggleAVPower() {
+        Callable c = new Callable() {
+            @Override
+            public String call() {
+                svc.toggleAVPower(new Callback<String>() {
+                    @Override
+                    public void success(String user, Response response) {
+                        Log.v("Retrofit Success", "AV Power Success");
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        Log.e("AV Power Failed", error.getMessage());
+                    }
+                });
+                return "";
+            }
+        };
+        try {
+            exec.submit(c).get();
+        } catch (ExecutionException e) {
+            Log.e("Interrupted Exception", e.getMessage());
+        } catch (InterruptedException e) {
+            Log.e("Execution Exception", e.getMessage());
+        }
+    }
+
+    public void toggleCMPower() {
+        Callable c = new Callable() {
+            @Override
+            public String call() {
+                svc.toggleCMPower(new Callback<String>() {
+                    @Override
+                    public void success(String user, Response response) {
+                        Log.v("Retrofit Success", "Comcast Power Success");
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        Log.e("Comcast Power Failed", error.getMessage());
                     }
                 });
                 return "";
