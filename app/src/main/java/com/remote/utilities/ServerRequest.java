@@ -20,7 +20,7 @@ import retrofit.http.Query;
  * Created by cameronridgewell on 7/30/15.
  */
 public class ServerRequest{
-    private final String ip_address = "http://ps2-wintra.rhcloud.com";
+    private final String ip_address = "http://remoteserver-wintra.rhcloud.com";
     private final RequestLibrary svc = new RestAdapter.Builder()
             .setEndpoint(ip_address).build()
             .create(RequestLibrary.class);
@@ -45,13 +45,17 @@ public class ServerRequest{
             public String call() {
                 svc.toggleTVPower(new Callback<String>() {
                     @Override
-                    public void success(String user, Response response) {
+                    public void success(String resp, Response response) {
                         Log.v("Retrofit Success", "TV Power Success");
                     }
 
                     @Override
                     public void failure(RetrofitError error) {
-                        Log.e("TV Power Failed", error.getMessage());
+                        if (error.getMessage() != null) {
+                            Log.e("TV Power Failed", "" + error.getMessage());
+                        } else {
+                            Log.e("TV Power Failed", "Null error");
+                        }
                     }
                 });
                 return "";
@@ -60,9 +64,36 @@ public class ServerRequest{
         try {
             exec.submit(c).get();
         } catch (ExecutionException e) {
-            Log.e("Interrupted Exception", e.getMessage());
+            Log.e("Interrupted Exception", "" + e.getMessage());
         } catch (InterruptedException e) {
-            Log.e("Execution Exception", e.getMessage());
+            Log.e("Execution Exception", "" + e.getMessage());
+        }
+    }
+
+    public void inputTVNumber(final int number) {
+        Callable c = new Callable() {
+            @Override
+            public String call() {
+                svc.inputTVNumber(number, new Callback<String>() {
+                    @Override
+                    public void success(String resp, Response response) {
+                        Log.v("Retrofit Success", "TV Number Success");
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        Log.e("TV Number Failed", "" + "" + error.getMessage());
+                    }
+                });
+                return "";
+            }
+        };
+        try {
+            exec.submit(c).get();
+        } catch (ExecutionException e) {
+            Log.e("Interrupted Exception", "" + e.getMessage());
+        } catch (InterruptedException e) {
+            Log.e("Execution Exception", "" + e.getMessage());
         }
     }
 
@@ -72,13 +103,13 @@ public class ServerRequest{
             public String call() {
                 svc.toggleAVPower(new Callback<String>() {
                     @Override
-                    public void success(String user, Response response) {
+                    public void success(String resp, Response response) {
                         Log.v("Retrofit Success", "AV Power Success");
                     }
 
                     @Override
                     public void failure(RetrofitError error) {
-                        Log.e("AV Power Failed", error.getMessage());
+                        Log.e("AV Power Failed", "" + error.getMessage());
                     }
                 });
                 return "";
@@ -87,9 +118,36 @@ public class ServerRequest{
         try {
             exec.submit(c).get();
         } catch (ExecutionException e) {
-            Log.e("Interrupted Exception", e.getMessage());
+            Log.e("Interrupted Exception", "" + e.getMessage());
         } catch (InterruptedException e) {
-            Log.e("Execution Exception", e.getMessage());
+            Log.e("Execution Exception", "" + e.getMessage());
+        }
+    }
+
+    public void inputAVNumber(final int number) {
+        Callable c = new Callable() {
+            @Override
+            public String call() {
+                svc.inputAVNumber(number, new Callback<String>() {
+                    @Override
+                    public void success(String resp, Response response) {
+                        Log.v("Retrofit Success", "AV Number Success");
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        Log.e("AV Number Failed", "" + "" + error.getMessage());
+                    }
+                });
+                return "";
+            }
+        };
+        try {
+            exec.submit(c).get();
+        } catch (ExecutionException e) {
+            Log.e("Interrupted Exception", "" + e.getMessage());
+        } catch (InterruptedException e) {
+            Log.e("Execution Exception", "" + e.getMessage());
         }
     }
 
@@ -99,13 +157,13 @@ public class ServerRequest{
             public String call() {
                 svc.toggleCMPower(new Callback<String>() {
                     @Override
-                    public void success(String user, Response response) {
+                    public void success(String resp, Response response) {
                         Log.v("Retrofit Success", "Comcast Power Success");
                     }
 
                     @Override
                     public void failure(RetrofitError error) {
-                        Log.e("Comcast Power Failed", error.getMessage());
+                        Log.e("Comcast Power Failed", "" + error.getMessage());
                     }
                 });
                 return "";
@@ -114,9 +172,36 @@ public class ServerRequest{
         try {
             exec.submit(c).get();
         } catch (ExecutionException e) {
-            Log.e("Interrupted Exception", e.getMessage());
+            Log.e("Interrupted Exception", "" + e.getMessage());
         } catch (InterruptedException e) {
-            Log.e("Execution Exception", e.getMessage());
+            Log.e("Execution Exception", "" + e.getMessage());
+        }
+    }
+
+    public void inputCMNumber(final int number) {
+        Callable c = new Callable() {
+            @Override
+            public String call() {
+                svc.inputCMNumber(number, new Callback<String>() {
+                    @Override
+                    public void success(String resp, Response response) {
+                        Log.v("Retrofit Success", "CM Number Success");
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        Log.e("CM Number Failed", "" + error.getMessage());
+                    }
+                });
+                return "";
+            }
+        };
+        try {
+            exec.submit(c).get();
+        } catch (ExecutionException e) {
+            Log.e("Interrupted Exception", "" + e.getMessage());
+        } catch (InterruptedException e) {
+            Log.e("Execution Exception", "" + e.getMessage());
         }
     }
 }

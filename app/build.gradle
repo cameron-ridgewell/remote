@@ -27,4 +27,7 @@ dependencies {
     compile 'com.github.clans:fab:1.5.5'
     compile 'com.facebook.rebound:rebound:0.3.7'
     compile 'com.joanzapata.android:android-iconify:1.0.8'
+    compile ('com.weiwangcn.betterspinner:library-material:1.1.0') {
+        exclude group: 'com.android.support', module: 'appcompat-v7'
+    }
 }

@@ -9,10 +9,19 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="action_example">Example action</string>
+    <string name="action_example">Example Action</string>
 
     <string name="action_settings">Settings</string>
 
-<!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="icon_chrome">&#xf268;</string>
+
+    <string-array name="devices_array">
+        <item>HDMI Input...</item>
+        <item>Television</item>
+        <item>Chromecast</item>
+        <item>XBox 360</item>
+        <item>Wii U</item>
+        <item>HDMI Aux</item>
+    </string-array>
+
 </resources>

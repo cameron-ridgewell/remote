@@ -1,25 +1,29 @@
 package com.remote;
 
 import android.app.Activity;
+import android.content.Context;
 import android.net.Uri;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
+import android.view.inputmethod.InputMethodManager;
 
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.remote.utilities.ServerRequest;
 
 
-public class MainActivity extends ActionBarActivity implements Main_Remote.OnFragmentInteractionListener,
+public class MainActivity extends ActionBarActivity implements MainRemote.OnFragmentInteractionListener,
         NavigationDrawerFragment.NavigationDrawerCallbacks {
 
     /**
@@ -61,6 +65,7 @@ public class MainActivity extends ActionBarActivity implements Main_Remote.OnFra
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
         powerMenuSetup();
+        setupBackground();
     }
 
     @Override
@@ -148,7 +153,7 @@ public class MainActivity extends ActionBarActivity implements Main_Remote.OnFra
             Fragment activeFragment;
             switch (sectionNumber) {
                 case 1:
-                    activeFragment = new Main_Remote();
+                    activeFragment = new MainRemote();
                     break;
 
                 default:
@@ -178,6 +183,9 @@ public class MainActivity extends ActionBarActivity implements Main_Remote.OnFra
         }
     }
 
+    /**
+     * Sets up the FAB power menu which allows powering off individual devices
+     */
     private void powerMenuSetup() {
         power_menu = (FloatingActionMenu) findViewById(R.id.power_menu);
         TVPower = (FloatingActionButton) findViewById(R.id.TVPower);
@@ -216,6 +224,22 @@ public class MainActivity extends ActionBarActivity implements Main_Remote.OnFra
             public void onClick(View v) {
                 svreq.toggleCMPower();
                 power_menu.close(true);
+            }
+        });
+    }
+
+    /**
+     * This function allows any clicks on nonbutton entities to cause the power_menu to close
+     */
+    private void setupBackground() {
+        View back = findViewById(R.id.container);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (power_menu.isOpened()) {
+                    power_menu.close(true);
+
+                }
             }
         });
     }

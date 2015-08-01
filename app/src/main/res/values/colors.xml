@@ -30,6 +30,8 @@
     <color name="success_color_light">#80c780</color>
     <color name="success_color_dark">#449d44</color>
 
+    <color name="background_grey">#333333</color>
+
     <color name="white">#ffffff</color>
     <color name="black">#000000</color>
 
