@@ -27,6 +27,9 @@ public interface RequestLibrary {
     @POST("/av/?command=number")
     public void inputAVNumber(@Query("num") int num, Callback<String> success);
 
+    @POST("/av/?command=changeHDMI")
+    public void changeHDMI(@Query("port") String port, Callback<String> success);
+
     /**
      * CM Commands
      */
@@ -40,4 +43,6 @@ public interface RequestLibrary {
     /**
      * Other Commands
      */
+    @POST("/touch/")
+    public void touch(Callback<String> success);
 }

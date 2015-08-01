@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -43,8 +44,6 @@ public class MainRemote extends Fragment {
 
     private Spinner deviceSelect;
     private String currentDevice = null;
-
-    private int[] img_array = {R.drawable.ic_drawer, R.drawable.ic_drawer};
 
     private BootstrapButton powerAll;
     private BootstrapButton button0;
@@ -225,6 +224,30 @@ public class MainRemote extends Fragment {
 
         deviceSelect.setAdapter(new SpinnerImageAdapter(getActivity(), R.layout.image_row,
                 getResources().getStringArray(R.array.devices_array)));
+
+        final String[] deviceList = getResources().getStringArray(R.array.devices_array);
+
+        deviceSelect.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView,
+                                       int position, long id) {
+
+                if (!deviceList[position].equals(currentDevice)) {
+                    svreq.changeHDMI(deviceList[position]);
+                }
+
+                if (position == 0) {
+                    currentDevice = null;
+                } else {
+                    currentDevice = deviceList[position];
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                // your code here
+            }
+        });
 
         final Drawable spinnerDrawable = deviceSelect.getBackground().getConstantState().newDrawable();
 

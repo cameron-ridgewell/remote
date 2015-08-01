@@ -151,6 +151,33 @@ public class ServerRequest{
         }
     }
 
+    public void changeHDMI(final String port) {
+        Callable c = new Callable() {
+            @Override
+            public String call() {
+                svc.changeHDMI(port, new Callback<String>() {
+                    @Override
+                    public void success(String resp, Response response) {
+                        Log.v("Retrofit Success", "AV HDMI port Success");
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        Log.e("AV HDMI port Failed", "" + "" + error.getMessage());
+                    }
+                });
+                return "";
+            }
+        };
+        try {
+            exec.submit(c).get();
+        } catch (ExecutionException e) {
+            Log.e("Interrupted Exception", "" + e.getMessage());
+        } catch (InterruptedException e) {
+            Log.e("Execution Exception", "" + e.getMessage());
+        }
+    }
+
     public void toggleCMPower() {
         Callable c = new Callable() {
             @Override
@@ -191,6 +218,33 @@ public class ServerRequest{
                     @Override
                     public void failure(RetrofitError error) {
                         Log.e("CM Number Failed", "" + error.getMessage());
+                    }
+                });
+                return "";
+            }
+        };
+        try {
+            exec.submit(c).get();
+        } catch (ExecutionException e) {
+            Log.e("Interrupted Exception", "" + e.getMessage());
+        } catch (InterruptedException e) {
+            Log.e("Execution Exception", "" + e.getMessage());
+        }
+    }
+
+    public void touch() {
+        Callable c = new Callable() {
+            @Override
+            public String call() {
+                svc.touch(new Callback<String>() {
+                    @Override
+                    public void success(String resp, Response response) {
+                        Log.v("Retrofit Success", "Touch Success");
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        Log.e("Touch Failed", "" + error.getMessage());
                     }
                 });
                 return "";

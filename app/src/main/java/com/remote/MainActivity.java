@@ -45,6 +45,7 @@ public class MainActivity extends ActionBarActivity implements MainRemote.OnFrag
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        svreq.touch();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
