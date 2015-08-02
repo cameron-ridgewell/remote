@@ -287,7 +287,7 @@ public class MainRemote extends Fragment {
 
         @Override
         public View getDropDownView(int position, View convertView, ViewGroup parent) {
-            View v = null;
+            View v;
             if (position == 0) {
                 TextView tv = new TextView(getContext());
                 tv.setVisibility(View.GONE);
@@ -319,7 +319,7 @@ public class MainRemote extends Fragment {
                 icon.setImageResource(StoredResources.getInstance().getdeviceIconDict()
                         .get(strings[position]));
             } else {
-                icon.setImageResource(R.drawable.ic_drawer);
+                icon.setImageResource(R.drawable.ic_slanted_bars_20);
             }
             return row;
         }
