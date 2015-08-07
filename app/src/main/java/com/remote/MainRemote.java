@@ -19,6 +19,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -79,6 +80,7 @@ public class MainRemote extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
+
         }
     }
 
@@ -261,7 +263,7 @@ public class MainRemote extends Fragment {
                 int spinnerWidth = deviceSelect.getMeasuredWidth();
                 View grey_rect = rootView.findViewById(R.id.spinner_background);
                 int otherHeight = grey_rect.getMeasuredHeight();
-                grey_rect.setLayoutParams(new FrameLayout.LayoutParams(spinnerWidth, otherHeight + 6));
+                grey_rect.setLayoutParams(new RelativeLayout.LayoutParams(spinnerWidth + 25, otherHeight + 6));
                 return true;
             }
         });

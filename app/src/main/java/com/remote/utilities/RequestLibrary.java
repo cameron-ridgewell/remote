@@ -2,6 +2,7 @@ package com.remote.utilities;
 
 import retrofit.Callback;
 import retrofit.http.Body;
+import retrofit.http.GET;
 import retrofit.http.POST;
 import retrofit.http.Query;
 
@@ -45,4 +46,7 @@ public interface RequestLibrary {
      */
     @POST("/touch/")
     public void touch(Callback<String> success);
+
+    @GET("/BBB_URL/")
+    public String getTransmitURL();
 }

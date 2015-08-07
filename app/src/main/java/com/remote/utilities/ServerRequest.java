@@ -258,4 +258,22 @@ public class ServerRequest{
             Log.e("Execution Exception", "" + e.getMessage());
         }
     }
+
+    public String getTransmitURL() {
+        try {
+            Callable<String> callable = new Callable<String>() {
+                @Override
+                public String call() {
+                    return svc.getTransmitURL();
+                }
+            };
+            return exec.submit(callable).get();
+        } catch (ExecutionException e) {
+            Log.e("Interrupted Exception", e.getMessage());
+            return null;
+        } catch (InterruptedException e) {
+            Log.e("Execution Exception", e.getMessage());
+            return null;
+        }
+    }
 }
