@@ -1,7 +1,13 @@
 package com.remote.utilities;
 
+import android.content.Context;
+import android.util.Base64;
 import android.util.Log;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+
+import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -11,41 +17,44 @@ import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-import retrofit.http.Body;
-import retrofit.http.DELETE;
-import retrofit.http.GET;
-import retrofit.http.POST;
-import retrofit.http.Query;
+
 /**
  * Created by cameronridgewell on 7/30/15.
  */
 public class ServerRequest{
-    private final String ip_address = "http://remoteserver-wintra.rhcloud.com";
-    private final RequestLibrary svc = new RestAdapter.Builder()
-            .setEndpoint(ip_address).build()
-            .create(RequestLibrary.class);
+    private String command_ip = "http://98.249.35.81:8081/";
+    private CommandRequestLibrary svc = new RestAdapter.Builder()
+            .setEndpoint(command_ip).build()
+            .create(CommandRequestLibrary.class);
 
     private static ExecutorService exec = Executors.newFixedThreadPool(1);
 
     private static ServerRequest instance = null;
 
+    private Gson gson = new Gson();
+
     protected ServerRequest(){};
 
-    public static ServerRequest getInstance() {
+    public static ServerRequest getInstance(){
         if (instance == null) {
-            return new ServerRequest();
+            ServerRequest newInstance = new ServerRequest();
+            return newInstance;
         } else {
             return instance;
         }
+    }
+
+    public void loadUser(Context context) {
+        User user = AppData.getInstance().getThisUser(context.getApplicationContext());
     }
 
     public void toggleTVPower() {
         Callable c = new Callable() {
             @Override
             public String call() {
-                svc.toggleTVPower(new Callback<String>() {
+                svc.toggleTVPower(new Callback<JsonObject>() {
                     @Override
-                    public void success(String resp, Response response) {
+                    public void success(JsonObject resp, Response response) {
                         Log.v("Retrofit Success", "TV Power Success");
                     }
 
@@ -74,9 +83,9 @@ public class ServerRequest{
         Callable c = new Callable() {
             @Override
             public String call() {
-                svc.inputTVNumber(number, new Callback<String>() {
+                svc.inputTVNumber(number, new Callback<JsonObject>() {
                     @Override
-                    public void success(String resp, Response response) {
+                    public void success(JsonObject resp, Response response) {
                         Log.v("Retrofit Success", "TV Number Success");
                     }
 
@@ -101,9 +110,9 @@ public class ServerRequest{
         Callable c = new Callable() {
             @Override
             public String call() {
-                svc.toggleAVPower(new Callback<String>() {
+                svc.toggleAVPower(new Callback<JsonObject>() {
                     @Override
-                    public void success(String resp, Response response) {
+                    public void success(JsonObject resp, Response response) {
                         Log.v("Retrofit Success", "AV Power Success");
                     }
 
@@ -128,15 +137,69 @@ public class ServerRequest{
         Callable c = new Callable() {
             @Override
             public String call() {
-                svc.inputAVNumber(number, new Callback<String>() {
+                svc.inputAVNumber(number, new Callback<JsonObject>() {
                     @Override
-                    public void success(String resp, Response response) {
+                    public void success(JsonObject resp, Response response) {
                         Log.v("Retrofit Success", "AV Number Success");
                     }
 
                     @Override
                     public void failure(RetrofitError error) {
-                        Log.e("AV Number Failed", "" + "" + error.getMessage());
+                        Log.e("AV Number Failed", "" + error.getMessage());
+                    }
+                });
+                return "";
+            }
+        };
+        try {
+            exec.submit(c).get();
+        } catch (ExecutionException e) {
+            Log.e("Interrupted Exception", "" + e.getMessage());
+        } catch (InterruptedException e) {
+            Log.e("Execution Exception", "" + e.getMessage());
+        }
+    }
+
+    public void increaseAVVolume() {
+        Callable c = new Callable() {
+            @Override
+            public String call() {
+                svc.increaseAVVolume(new Callback<JsonObject>() {
+                    @Override
+                    public void success(JsonObject resp, Response response) {
+                        Log.v("Retrofit Success", "AV Volume Success");
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        Log.e("AV Volume Failed", "" + error.getMessage());
+                    }
+                });
+                return "";
+            }
+        };
+        try {
+            exec.submit(c).get();
+        } catch (ExecutionException e) {
+            Log.e("Interrupted Exception", "" + e.getMessage());
+        } catch (InterruptedException e) {
+            Log.e("Execution Exception", "" + e.getMessage());
+        }
+    }
+
+    public void decreaseAVVolume() {
+        Callable c = new Callable() {
+            @Override
+            public String call() {
+                svc.decreaseAVVolume(new Callback<JsonObject>() {
+                    @Override
+                    public void success(JsonObject resp, Response response) {
+                        Log.v("Retrofit Success", "AV Volume Success");
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        Log.e("AV Volume Failed", "" + error.getMessage());
                     }
                 });
                 return "";
@@ -155,9 +218,9 @@ public class ServerRequest{
         Callable c = new Callable() {
             @Override
             public String call() {
-                svc.changeHDMI(port, new Callback<String>() {
+                svc.changeHDMI(port, new Callback<JsonObject>() {
                     @Override
-                    public void success(String resp, Response response) {
+                    public void success(JsonObject resp, Response response) {
                         Log.v("Retrofit Success", "AV HDMI port Success");
                     }
 
@@ -182,9 +245,9 @@ public class ServerRequest{
         Callable c = new Callable() {
             @Override
             public String call() {
-                svc.toggleCMPower(new Callback<String>() {
+                svc.toggleCMPower(new Callback<JsonObject>() {
                     @Override
-                    public void success(String resp, Response response) {
+                    public void success(JsonObject resp, Response response) {
                         Log.v("Retrofit Success", "Comcast Power Success");
                     }
 
@@ -209,9 +272,9 @@ public class ServerRequest{
         Callable c = new Callable() {
             @Override
             public String call() {
-                svc.inputCMNumber(number, new Callback<String>() {
+                svc.inputCMNumber(number, new Callback<JsonObject>() {
                     @Override
-                    public void success(String resp, Response response) {
+                    public void success(JsonObject resp, Response response) {
                         Log.v("Retrofit Success", "CM Number Success");
                     }
 
@@ -232,19 +295,19 @@ public class ServerRequest{
         }
     }
 
-    public void touch() {
+    public String login() {
         Callable c = new Callable() {
             @Override
             public String call() {
-                svc.touch(new Callback<String>() {
+                svc.login(new Callback<JsonObject>() {
                     @Override
-                    public void success(String resp, Response response) {
-                        Log.v("Retrofit Success", "Touch Success");
+                    public void success(JsonObject resp, Response response) {
+                        Log.v("Retrofit Success", "Login Success");
                     }
 
                     @Override
                     public void failure(RetrofitError error) {
-                        Log.e("Touch Failed", "" + error.getMessage());
+                        Log.e("Login Failed", "" + error.getMessage());
                     }
                 });
                 return "";
@@ -257,23 +320,6 @@ public class ServerRequest{
         } catch (InterruptedException e) {
             Log.e("Execution Exception", "" + e.getMessage());
         }
-    }
-
-    public String getTransmitURL() {
-        try {
-            Callable<String> callable = new Callable<String>() {
-                @Override
-                public String call() {
-                    return svc.getTransmitURL();
-                }
-            };
-            return exec.submit(callable).get();
-        } catch (ExecutionException e) {
-            Log.e("Interrupted Exception", e.getMessage());
-            return null;
-        } catch (InterruptedException e) {
-            Log.e("Execution Exception", e.getMessage());
-            return null;
-        }
+        return "";
     }
 }

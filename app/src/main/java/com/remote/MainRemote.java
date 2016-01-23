@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -24,6 +25,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.beardedhen.androidbootstrap.BootstrapButton;
+import com.remote.utilities.AppData;
 import com.remote.utilities.ServerRequest;
 import com.remote.utilities.StoredResources;
 
@@ -58,6 +60,12 @@ public class MainRemote extends Fragment {
     private BootstrapButton button8;
     private BootstrapButton button9;
 
+    private BootstrapButton volumeUp;
+    private BootstrapButton volumeDown;
+
+    private BootstrapButton channelUp;
+    private BootstrapButton channelDown;
+
 
     /**
      * Use this factory method to create a new instance of
@@ -79,6 +87,7 @@ public class MainRemote extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        svreq.loadUser(this.getActivity().getApplicationContext());
         if (getArguments() != null) {
 
         }
@@ -90,9 +99,13 @@ public class MainRemote extends Fragment {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_main_remote, container, false);
 
-        powerButtonSetup();
-        numberPadSetup();
-        deviceSelectSetup();
+        Button button = (Button) rootView.findViewById(R.id.button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                svreq.increaseAVVolume();
+            }
+        });
 
         return rootView;
     }
@@ -136,93 +149,8 @@ public class MainRemote extends Fragment {
         public void onFragmentInteraction(Uri uri);
     }
 
-    public void powerButtonSetup() {
-        powerAll = (BootstrapButton) rootView.findViewById(R.id.power_button);
-        powerAll.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                svreq.toggleCMPower();
-                svreq.toggleAVPower();
-                svreq.toggleTVPower();
-            }
-        });
-    }
-
-    public void numberPadSetup() {
-        button0 = (BootstrapButton) rootView.findViewById(R.id.button_0);
-        button0.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                svreq.inputCMNumber(0);
-            }
-        });
-        button1 = (BootstrapButton) rootView.findViewById(R.id.button_1);
-        button1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                svreq.inputCMNumber(1);
-            }
-        });
-        button2 = (BootstrapButton) rootView.findViewById(R.id.button_2);
-        button2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                svreq.inputCMNumber(2);
-            }
-        });
-        button3 = (BootstrapButton) rootView.findViewById(R.id.button_3);
-        button3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                svreq.inputCMNumber(3);
-            }
-        });
-        button4 = (BootstrapButton) rootView.findViewById(R.id.button_4);
-        button4.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                svreq.inputCMNumber(4);
-            }
-        });
-        button5 = (BootstrapButton) rootView.findViewById(R.id.button_5);
-        button5.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                svreq.inputCMNumber(5);
-            }
-        });
-        button6 = (BootstrapButton) rootView.findViewById(R.id.button_6);
-        button6.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                svreq.inputCMNumber(6);
-            }
-        });
-        button7 = (BootstrapButton) rootView.findViewById(R.id.button_7);
-        button7.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                svreq.inputCMNumber(7);
-            }
-        });
-        button8 = (BootstrapButton) rootView.findViewById(R.id.button_8);
-        button8.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                svreq.inputCMNumber(8);
-            }
-        });
-        button9 = (BootstrapButton) rootView.findViewById(R.id.button_9);
-        button9.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                svreq.inputCMNumber(9);
-            }
-        });
-    }
-
     public void deviceSelectSetup() {
-        deviceSelect = (Spinner) rootView.findViewById(R.id.device_select);
+        //deviceSelect = (Spinner) rootView.findViewById(R.id.device_select);
 
         deviceSelect.setAdapter(new SpinnerImageAdapter(getActivity(), R.layout.image_row,
                 getResources().getStringArray(R.array.devices_array)));
@@ -234,7 +162,7 @@ public class MainRemote extends Fragment {
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView,
                                        int position, long id) {
 
-                if (!deviceList[position].equals(currentDevice)) {
+                if ((!deviceList[position].equals(currentDevice)) && position != 0) {
                     svreq.changeHDMI(deviceList[position]);
                 }
 
@@ -251,28 +179,9 @@ public class MainRemote extends Fragment {
             }
         });
 
-        final Drawable spinnerDrawable = deviceSelect.getBackground().getConstantState().newDrawable();
+    }
 
-        spinnerDrawable.setColorFilter(getResources().getColor(R.color.white), PorterDuff.Mode.SRC_ATOP);
-
-        ViewTreeObserver vto = deviceSelect.getViewTreeObserver();
-        vto.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-            public boolean onPreDraw() {
-                // Remove after the first run so it doesn't fire forever
-                deviceSelect.getViewTreeObserver().removeOnPreDrawListener(this);
-                int spinnerWidth = deviceSelect.getMeasuredWidth();
-                View grey_rect = rootView.findViewById(R.id.spinner_background);
-                int otherHeight = grey_rect.getMeasuredHeight();
-                grey_rect.setLayoutParams(new RelativeLayout.LayoutParams(spinnerWidth + 25, otherHeight + 6));
-                return true;
-            }
-        });
-
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            deviceSelect.setBackground(spinnerDrawable);
-        } else{
-            deviceSelect.setBackgroundDrawable(spinnerDrawable);
-        }
+    private void channelButtonSetup() {
 
     }
 

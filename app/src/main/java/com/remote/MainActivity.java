@@ -3,6 +3,7 @@ package com.remote;
 import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -21,6 +22,10 @@ import android.view.inputmethod.InputMethodManager;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.remote.utilities.ServerRequest;
+
+import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
 
 
 public class MainActivity extends ActionBarActivity implements MainRemote.OnFragmentInteractionListener,
@@ -45,10 +50,10 @@ public class MainActivity extends ActionBarActivity implements MainRemote.OnFrag
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        svreq.touch();
-        Log.e("url", svreq.getTransmitURL());
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        svreq.loadUser(getApplicationContext());
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);

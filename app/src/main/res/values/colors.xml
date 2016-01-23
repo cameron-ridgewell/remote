@@ -17,14 +17,7 @@
     <item name="secondary_dark_text_color" type="color">#212121</item>
     <item name="primary_light_text_color" type="color">#F5F5F5</item>
     <item name="secondary_light_text_color" type="color">#E0E0E0</item>
-    <item name="primary_app_color" type="color">#00C853</item>
-    <item name="secondary_app_color" type="color">#69F0AE</item>
-    <item name="accent_app_color_100" type="color">#F8BBD0</item>
-    <item name="accent_app_color_500" type="color">#E91E63</item>
-    <item name="accent_app_color_900" type="color">#880E4F</item>
     <item name="shadow_color" type="color">#E0E0E0</item>
-    <color name="sport_color">#6200EA</color>
-    <color name="sport_color_light">#651FFF</color>
 
     <color name="success_color">#5CB85C</color>
     <color name="success_color_light">#80c780</color>
