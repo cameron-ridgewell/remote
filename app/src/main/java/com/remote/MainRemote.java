@@ -1,33 +1,37 @@
 package com.remote;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.PorterDuff;
 import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.beardedhen.androidbootstrap.BootstrapButton;
-import com.remote.utilities.AppData;
+import com.remote.elements.ChannelAdapter;
+import com.remote.utilities.ButtonAction;
+import com.remote.utilities.ActionClickListener;
 import com.remote.utilities.ServerRequest;
+import com.remote.utilities.StatusButton;
 import com.remote.utilities.StoredResources;
+
+import org.w3c.dom.Text;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
+import mehdi.sakout.fancybuttons.FancyButton;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -45,26 +49,10 @@ public class MainRemote extends Fragment {
 
     private ServerRequest svreq = ServerRequest.getInstance();
 
-    private Spinner deviceSelect;
-    private String currentDevice = null;
+    private Spinner channelSelect;
+    private int currentDevice;
 
-    private BootstrapButton powerAll;
-    private BootstrapButton button0;
-    private BootstrapButton button1;
-    private BootstrapButton button2;
-    private BootstrapButton button3;
-    private BootstrapButton button4;
-    private BootstrapButton button5;
-    private BootstrapButton button6;
-    private BootstrapButton button7;
-    private BootstrapButton button8;
-    private BootstrapButton button9;
-
-    private BootstrapButton volumeUp;
-    private BootstrapButton volumeDown;
-
-    private BootstrapButton channelUp;
-    private BootstrapButton channelDown;
+    private StatusButton powerButton;
 
 
     /**
@@ -99,14 +87,8 @@ public class MainRemote extends Fragment {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_main_remote, container, false);
 
-        Button button = (Button) rootView.findViewById(R.id.button);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                svreq.increaseAVVolume();
-            }
-        });
-
+        avPowerButtonSetup(rootView);
+        hdmiChannelSelectorSetup(rootView);
         return rootView;
     }
 
@@ -134,6 +116,12 @@ public class MainRemote extends Fragment {
         mListener = null;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        getInitialValues();
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -149,90 +137,148 @@ public class MainRemote extends Fragment {
         public void onFragmentInteraction(Uri uri);
     }
 
-    public void deviceSelectSetup() {
-        //deviceSelect = (Spinner) rootView.findViewById(R.id.device_select);
-
-        deviceSelect.setAdapter(new SpinnerImageAdapter(getActivity(), R.layout.image_row,
-                getResources().getStringArray(R.array.devices_array)));
-
-        final String[] deviceList = getResources().getStringArray(R.array.devices_array);
-
-        deviceSelect.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+    private void avPowerButtonSetup(View rootView) {
+        final StatusButton avPowerButton = new StatusButton((FancyButton) rootView
+                .findViewById(R.id.AVPower));
+        powerButton = avPowerButton;
+        svreq.getAVPower(new ButtonAction() {
             @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView,
-                                       int position, long id) {
-
-                if ((!deviceList[position].equals(currentDevice)) && position != 0) {
-                    svreq.changeHDMI(deviceList[position]);
+            public void action(String input) {
+                Log.v("Returned", input);
+                if (input.equals("Off") || input.equals("Standby")) {
+                    avPowerButton.setStatus("Off");
+                    avPowerButton.deselectButton(getResources()
+                            .getColor(R.color.powerbutton));
+                } else if (input.equals("On")) {
+                    avPowerButton.setStatus("On");
+                    avPowerButton.selectButton(getResources()
+                            .getColor(R.color.powerbutton));
                 }
+            }
+        });
+        Map<String, View> newmap = new HashMap<>();
+        newmap.put("PowerButton", avPowerButton);
+        avPowerButton.setOnClickListener(new ActionClickListener(newmap) {
+            @Override
+            public void onClick(View v) {
+                StatusButton button = ((StatusButton) viewLibrary.get("PowerButton"));
+                Log.v("Current Status", button.getStatus());
+                if (button.getStatus() == "Off") {
+                    avPowerButton.selectButton(getResources()
+                            .getColor(R.color.powerbutton));
+                    button.setStatus("On");
+                    svreq.setAVPowerOn(new ButtonAction() {
+                        public void action(String input) {
+                            if (input.toLowerCase().equals("on")) {
 
-                if (position == 0) {
-                    currentDevice = null;
-                } else {
-                    currentDevice = deviceList[position];
+                            } else if (input.toLowerCase().equals("off") ||
+                                    input.toLowerCase().equals("standby")) {
+                                StatusButton button = ((StatusButton) viewLibrary
+                                        .get("PowerButton"));
+                                avPowerButton.deselectButton(getResources()
+                                        .getColor(R.color.powerbutton));
+                                button.setStatus("Off");
+                            } else {
+                                Log.v("Error", "Invalid return from power status request");
+                            }
+                        }
+                    });
+                } else if (button.getStatus() == "On") {
+                    avPowerButton.deselectButton(getResources()
+                            .getColor(R.color.powerbutton));
+                    button.setStatus("Off");
+                    svreq.setAVPowerOff(new ButtonAction() {
+                        public void action(String input) {
+                            if (input.toLowerCase().equals("on")) {
+                                StatusButton button = ((StatusButton) viewLibrary.get("PowerButton"));
+                                avPowerButton.selectButton(getResources()
+                                        .getColor(R.color.powerbutton));
+                                button.setStatus("On");
+                            } else if (input.toLowerCase().equals("off") ||
+                                    input.toLowerCase().equals("standby")) {
+                            } else {
+                                Log.v("Error", "Invalid return from power status request");
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    private void hdmiChannelSelectorSetup(final View rootView) {
+        currentDevice = 0;
+        channelSelect = (Spinner) rootView.findViewById(R.id.channelSelect);
+        ChannelAdapter adapter = new ChannelAdapter(getActivity().getApplicationContext(),
+                Arrays.asList(getResources().getStringArray(R.array.devices_array)), channelSelect);
+        channelSelect.setAdapter(adapter);
+        svreq.getAVChannel(new ButtonAction() {
+            @Override
+            public void action(String input) {
+                if (input.substring(0, 4).equals("HDMI")) {
+                    int inputDev = Integer.parseInt(input.substring(4, 5)) - 1;
+                    channelSelect.setSelection(inputDev);
+                    TextView text = ((TextView) rootView.findViewById(R.id.channel_adapter_id));
+                    Log.v("Text", text.getText().toString());
+                    text.setText(channelSelect.getItemAtPosition(inputDev).toString());
+                }
+            }
+        });
+        channelSelect.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Log.v("current", currentDevice + "");
+                if (position != currentDevice) {
+                    currentDevice = position;
+                    TextView text = ((TextView) view.findViewById(R.id.channel_adapter_id));
+                    text.setText(channelSelect.getItemAtPosition(position).toString());
+                    svreq.setAVChannel("HDMI" + (position + 1), new ButtonAction() {
+                        @Override
+                        public void action(String input) {
+                        }
+                    });
                 }
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-                // your code here
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+    }
+
+    private void getInitialValues() {
+        svreq.getAVPower(new ButtonAction() {
+            @Override
+            public void action(String input) {
+                Log.v("Returned", input);
+                if (input.equals("Off") || input.equals("Standby")) {
+                    powerButton.setStatus("Off");
+                    powerButton.deselectButton(getResources()
+                            .getColor(R.color.powerbutton));
+                } else if (input.equals("On")) {
+                    powerButton.setStatus("On");
+                    powerButton.selectButton(getResources()
+                            .getColor(R.color.powerbutton));
+                    getInitialValuesHelper();
+                }
             }
         });
 
     }
 
-    private void channelButtonSetup() {
-
-    }
-
-    public class SpinnerImageAdapter extends ArrayAdapter<String>{
-
-        Context context;
-        String[] strings;
-
-        public SpinnerImageAdapter(Context context, int textViewResourceId,   String[] objects) {
-            super(context, textViewResourceId, objects);
-            this.context = context;
-            this.strings = objects;
-        }
-
-        @Override
-        public View getDropDownView(int position, View convertView, ViewGroup parent) {
-            View v;
-            if (position == 0) {
-                TextView tv = new TextView(getContext());
-                tv.setVisibility(View.GONE);
-                tv.setHeight(0);
-                v = tv;
-            } else {
-                v = getCustomView(position, convertView, parent);
+    private void getInitialValuesHelper() {
+        svreq.getAVChannel(new ButtonAction() {
+            @Override
+            public void action(String input) {
+                if (input.substring(0, 4).equals("HDMI")) {
+                    int inputDev = Integer.parseInt(input.substring(4, 5)) - 1;
+                    channelSelect.setSelection(inputDev);
+                    TextView text = ((TextView) rootView.findViewById(R.id.channel_adapter_id));
+                    Log.v("Text", text.getText().toString());
+                    text.setText(channelSelect.getItemAtPosition(inputDev).toString());
+                }
             }
-            return v;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            return getCustomView(position, convertView, parent);
-        }
-
-        public View getCustomView(int position, View convertView, ViewGroup parent) {
-
-            LayoutInflater inflater = (LayoutInflater) context.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
-            View row = inflater.inflate(R.layout.image_row, parent, false);
-
-            TextView label=(TextView) row.findViewById(R.id.title);
-            label.setText(strings[position]);
-            if (position == 0) {
-                label.setTypeface(label.getTypeface(), Typeface.ITALIC);
-            }
-            ImageView icon = (ImageView) row.findViewById(R.id.image);
-            if (position != 0) {
-                icon.setImageResource(StoredResources.getInstance().getdeviceIconDict()
-                        .get(strings[position]));
-            } else {
-                icon.setImageResource(R.drawable.ic_slanted_bars_20);
-            }
-            return row;
-        }
+        });
     }
 }

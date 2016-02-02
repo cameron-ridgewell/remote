@@ -16,49 +16,55 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <com.github.clans.fab.FloatingActionMenu
-            android:id="@+id/power_menu"
+            android:id="@+id/volume_presets"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
+            android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
-            fab:menu_icon="@drawable/power_off_25"
+            fab:menu_icon="@drawable/volume_up_25"
             fab:menu_animationDelayPerItem="0"
             fab:menu_colorNormal="@color/success_color"
             fab:menu_colorPressed="@color/success_color_dark"
             fab:menu_colorRipple="#1B5E20"
             fab:menu_labels_maxLines="2"
             fab:menu_labels_ellipsize="end"
-            fab:menu_openDirection="down">
+            fab:menu_openDirection="up">
 
             <com.github.clans.fab.FloatingActionButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/AVPower"
-                android:src="@drawable/power_off_25_music"
-                fab:fab_label="A/V Receiver"
+                android:id="@+id/highVolume"
+                android:src="@drawable/volume_up_25"
+                fab:fab_label="60dB"
                 fab:fab_colorNormal="@color/success_color_dark"
-                fab:fab_colorPressed="@color/success_color_dark"
-                />
+                fab:fab_colorPressed="@color/success_color_dark"/>
 
             <com.github.clans.fab.FloatingActionButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/CMPower"
-                android:src="@drawable/power_off_25_comcast"
+                android:id="@+id/midVolume"
+                android:src="@drawable/volume_mid_25"
                 fab:fab_colorNormal="@color/success_color_dark"
                 fab:fab_colorPressed="@color/success_color_dark"
-                fab:fab_label="Cable"
-                />
+                fab:fab_label="40dB"/>
 
             <com.github.clans.fab.FloatingActionButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/TVPower"
-                android:src="@drawable/power_off_25_tv"
+                android:id="@+id/lowVolume"
+                android:src="@drawable/volume_low_25"
                 fab:fab_colorNormal="@color/success_color_dark"
                 fab:fab_colorPressed="@color/success_color_dark"
-                fab:fab_label="Television"
-                />
+                fab:fab_label="20dB"/>
+
+            <com.github.clans.fab.FloatingActionButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/mute"
+                android:src="@drawable/volume_off_25"
+                fab:fab_colorNormal="@color/success_color_dark"
+                fab:fab_colorPressed="@color/success_color_dark"
+                fab:fab_label="Mute"/>
 
         </com.github.clans.fab.FloatingActionMenu>
 

@@ -28,4 +28,12 @@
     <color name="white">#ffffff</color>
     <color name="black">#000000</color>
 
+    <color name="powerbutton">#F44336</color>
+    <color name="powerbutton_pressed">#C62828</color>
+    <color name="colorbuttontext">#FFFFFF</color>
+
+    <color name="secondary_button_color">#2196F3</color>
+    <color name="secondary_button_color_pressed">#1565C0</color>
+
+
 </resources> 

@@ -1,31 +1,23 @@
 package com.remote;
 
 import android.app.Activity;
-import android.content.Context;
 import android.net.Uri;
-import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
-import android.view.inputmethod.InputMethodManager;
 
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
+import com.remote.utilities.ButtonAction;
 import com.remote.utilities.ServerRequest;
-
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
 
 
 public class MainActivity extends ActionBarActivity implements MainRemote.OnFragmentInteractionListener,
@@ -36,10 +28,12 @@ public class MainActivity extends ActionBarActivity implements MainRemote.OnFrag
      */
     private NavigationDrawerFragment mNavigationDrawerFragment;
 
-    private FloatingActionMenu power_menu;
-    private FloatingActionButton TVPower;
-    private FloatingActionButton AVPower;
-    private FloatingActionButton CMPower;
+    private FloatingActionMenu volume_presets;
+    private FloatingActionButton highVolume;
+    private FloatingActionButton midVolume;
+    private FloatingActionButton lowVolume;
+    private FloatingActionButton mute;
+
 
     private ServerRequest svreq = ServerRequest.getInstance();
 
@@ -191,60 +185,88 @@ public class MainActivity extends ActionBarActivity implements MainRemote.OnFrag
     }
 
     /**
-     * Sets up the FAB power menu which allows powering off individual devices
+     * Sets up the FAB preset menu
      */
     private void powerMenuSetup() {
-        power_menu = (FloatingActionMenu) findViewById(R.id.power_menu);
-        TVPower = (FloatingActionButton) findViewById(R.id.TVPower);
-        AVPower = (FloatingActionButton) findViewById(R.id.AVPower);
-        CMPower = (FloatingActionButton) findViewById(R.id.CMPower);
+        volume_presets = (FloatingActionMenu) findViewById(R.id.volume_presets);
+        highVolume = (FloatingActionButton) findViewById(R.id.highVolume);
+        midVolume = (FloatingActionButton) findViewById(R.id.midVolume);
+        lowVolume = (FloatingActionButton) findViewById(R.id.lowVolume);
+        mute = (FloatingActionButton) findViewById(R.id.mute);
 
-        power_menu.setOnMenuToggleListener(new FloatingActionMenu.OnMenuToggleListener() {
+        volume_presets.setOnMenuToggleListener(new FloatingActionMenu.OnMenuToggleListener() {
             @Override
             public void onMenuToggle(boolean opened) {
                 if (opened) {
-                    power_menu.setMenuButtonColorNormal(getResources()
+                    volume_presets.setMenuButtonColorNormal(getResources()
                             .getColor(R.color.success_color_light));
                 } else {
-                    power_menu.setMenuButtonColorNormal(getResources()
+                    volume_presets.setMenuButtonColorNormal(getResources()
                             .getColor(R.color.success_color));
                 }
             }
         });
 
-        TVPower.setOnClickListener(new View.OnClickListener() {
+        highVolume.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                svreq.toggleTVPower();
-                power_menu.close(true);
+                svreq.setAVVolume(60.0, new ButtonAction() {
+                    @Override
+                    public void action(String input) {
+                        //write a function to update the volume display
+                    }
+                });
+                volume_presets.close(true);
             }
         });
-        AVPower.setOnClickListener(new View.OnClickListener() {
+        midVolume.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                svreq.toggleAVPower();
-                power_menu.close(true);
+                svreq.setAVVolume(40.0, new ButtonAction() {
+                    @Override
+                    public void action(String input) {
+                        //write a function to update the volume display
+                    }
+                });
+                volume_presets.close(true);
             }
         });
-        CMPower.setOnClickListener(new View.OnClickListener() {
+        lowVolume.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                svreq.toggleCMPower();
-                power_menu.close(true);
+                svreq.setAVVolume(20.0, new ButtonAction() {
+                    @Override
+                    public void action(String input) {
+                        //write a function to update the volume display
+                    }
+                });
+                volume_presets.close(true);
+            }
+        });
+        mute.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                svreq.setAVMute(new ButtonAction() {
+                    @Override
+                    public void action(String input) {
+                        //write a function to update the volume display
+                    }
+                });
+                volume_presets.close(true);
             }
         });
     }
 
     /**
-     * This function allows any clicks on nonbutton entities to cause the power_menu to close
+     * This function allows any clicks on nonbutton entities to cause the volume_presets to close
      */
     private void setupBackground() {
         View back = findViewById(R.id.container);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (power_menu.isOpened()) {
-                    power_menu.close(true);
+                if (volume_presets.isOpened()) {
+                    volume_presets.close(true);
 
                 }
             }

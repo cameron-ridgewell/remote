@@ -15,13 +15,15 @@
 
     <string name="icon_chrome">&#xf268;</string>
 
+    <!-- Order matters here and corresponds to HDMI input -->
     <string-array name="devices_array">
-        <item>HDMI Input...</item>
-        <item>Television</item>
         <item>Chromecast</item>
         <item>XBox 360</item>
+        <item>Television</item>
         <item>Wii U</item>
         <item>HDMI Aux</item>
     </string-array>
+
+    <string name="icon_heart">&#xf004;</string>
 
 </resources>
