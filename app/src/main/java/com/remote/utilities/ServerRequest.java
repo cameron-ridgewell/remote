@@ -228,14 +228,16 @@ public class ServerRequest{
         }
     }
 
-    public void increaseAVVolume() {
+    public void increaseAVVolume(final ButtonAction ba) {
         Callable c = new Callable() {
             @Override
             public String call() {
-                svc.increaseAVVolume(new Callback<JsonObject>() {
+                svc.increaseAVVolume(new Callback<String>() {
                     @Override
-                    public void success(JsonObject resp, Response response) {
+                    public void success(String resp, Response response) {
+                        Log.v("Response", resp);
                         Log.v("Retrofit Success", "AV Volume Success");
+                        ba.action(resp);
                     }
 
                     @Override
@@ -255,14 +257,16 @@ public class ServerRequest{
         }
     }
 
-    public void decreaseAVVolume() {
+    public void decreaseAVVolume(final ButtonAction ba) {
         Callable c = new Callable() {
             @Override
             public String call() {
-                svc.decreaseAVVolume(new Callback<JsonObject>() {
+                svc.decreaseAVVolume(new Callback<String>() {
                     @Override
-                    public void success(JsonObject resp, Response response) {
+                    public void success(String resp, Response response) {
+                        Log.v("Response", resp);
                         Log.v("Retrofit Success", "AV Volume Success");
+                        ba.action(resp);
                     }
 
                     @Override
@@ -342,21 +346,24 @@ public class ServerRequest{
         }
     }
 
-    public void changeHDMI(final String port) {
+    public void getAVVolume(final ButtonAction ba) {
         Callable c = new Callable() {
             @Override
             public String call() {
-                svc.changeHDMI(port, new Callback<JsonObject>() {
+                svc.getAVVolume(new Callback<String>() {
                     @Override
-                    public void success(JsonObject resp, Response response) {
-                        Log.v("Retrofit Success", "AV HDMI port Success");
+                    public void success(String resp, Response response) {
+                        Log.v("Response", resp);
+                        Log.v("Retrofit Success", "AV Volume Status Success");
+                        ba.action(resp);
                     }
 
                     @Override
                     public void failure(RetrofitError error) {
-                        Log.e("AV HDMI port Failed", "" + "" + error.getMessage());
+                        Log.e("AV Volume Status Failed", "" + error.getMessage());
                     }
                 });
+
                 return "";
             }
         };

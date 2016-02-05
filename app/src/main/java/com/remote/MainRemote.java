@@ -5,14 +5,17 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,11 +25,8 @@ import com.remote.utilities.ButtonAction;
 import com.remote.utilities.ActionClickListener;
 import com.remote.utilities.ServerRequest;
 import com.remote.utilities.StatusButton;
-import com.remote.utilities.StoredResources;
+import com.remote.widgets.discreteseekbar.DiscreteSeekBar;
 
-import org.w3c.dom.Text;
-
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -53,6 +53,9 @@ public class MainRemote extends Fragment {
     private int currentDevice;
 
     private StatusButton powerButton;
+    private StatusButton volumeUp;
+    private StatusButton volumeDown;
+    private DiscreteSeekBar volumeBar;
 
 
     /**
@@ -89,6 +92,7 @@ public class MainRemote extends Fragment {
 
         avPowerButtonSetup(rootView);
         hdmiChannelSelectorSetup(rootView);
+        volumeButtonSetup(rootView);
         return rootView;
     }
 
@@ -137,7 +141,7 @@ public class MainRemote extends Fragment {
         public void onFragmentInteraction(Uri uri);
     }
 
-    private void avPowerButtonSetup(View rootView) {
+    private void avPowerButtonSetup(final View rootView) {
         final StatusButton avPowerButton = new StatusButton((FancyButton) rootView
                 .findViewById(R.id.AVPower));
         powerButton = avPowerButton;
@@ -212,37 +216,93 @@ public class MainRemote extends Fragment {
         ChannelAdapter adapter = new ChannelAdapter(getActivity().getApplicationContext(),
                 Arrays.asList(getResources().getStringArray(R.array.devices_array)), channelSelect);
         channelSelect.setAdapter(adapter);
-        svreq.getAVChannel(new ButtonAction() {
-            @Override
-            public void action(String input) {
-                if (input.substring(0, 4).equals("HDMI")) {
-                    int inputDev = Integer.parseInt(input.substring(4, 5)) - 1;
-                    channelSelect.setSelection(inputDev);
-                    TextView text = ((TextView) rootView.findViewById(R.id.channel_adapter_id));
-                    Log.v("Text", text.getText().toString());
-                    text.setText(channelSelect.getItemAtPosition(inputDev).toString());
-                }
-            }
-        });
+        getInitialValuesHelper(0);
         channelSelect.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Log.v("current", currentDevice + "");
+                Log.v("current", currentDevice + " " + position);
                 if (position != currentDevice) {
                     currentDevice = position;
                     TextView text = ((TextView) view.findViewById(R.id.channel_adapter_id));
                     text.setText(channelSelect.getItemAtPosition(position).toString());
-                    svreq.setAVChannel("HDMI" + (position + 1), new ButtonAction() {
-                        @Override
-                        public void action(String input) {
-                        }
-                    });
+                    if (position < getResources().getStringArray(R.array.devices_array).length - 3) {
+                        svreq.setAVChannel("HDMI" + (position + 1), new ButtonAction() {
+                            @Override
+                            public void action(String input) {
+                                getInitialValuesHelper(0);
+                            }
+                        });
+                    } else if (position == getResources().getStringArray(R.array.devices_array).length - 2) {
+                        svreq.setAVChannel("Spotify", new ButtonAction() {
+                            @Override
+                            public void action(String input) {
+                                getInitialValuesHelper(0);
+                            }
+                        });
+                    }
                 }
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
+            }
+        });
+    }
+
+    private void volumeButtonSetup(final View rootView) {
+        volumeUp = new StatusButton((FancyButton) rootView.findViewById(R.id.volume_up));
+        volumeDown = new StatusButton((FancyButton) rootView.findViewById(R.id.volume_down));
+        volumeBar = (DiscreteSeekBar) rootView.findViewById(R.id.volume_bar);
+
+        volumeUp.setOnClickListener(new ActionClickListener() {
+            @Override
+            public void onClick(View v) {
+                svreq.increaseAVVolume(new ButtonAction() {
+                    @Override
+                    public void action(String input) {
+                        String[] volume = input.split("\\.");
+                        updateVolumeBar(Integer.parseInt(volume[0]));
+                    }
+                });
+            }
+        });
+
+        volumeDown.setOnClickListener(new ActionClickListener() {
+            @Override
+            public void onClick(View v) {
+                svreq.decreaseAVVolume(new ButtonAction() {
+                    @Override
+                    public void action(String input) {
+                        String[] volume = input.split("\\.");
+                        updateVolumeBar(Integer.parseInt(volume[0]));
+                    }
+                });
+            }
+        });
+
+        volumeBar.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener() {
+            @Override
+            public void onProgressChanged(DiscreteSeekBar seekBar, int value, boolean fromUser) {}
+
+            @Override
+            public void onStartTrackingTouch(DiscreteSeekBar seekBar) {}
+
+            @Override
+            public void onStopTrackingTouch(DiscreteSeekBar seekBar) {
+                int value = seekBar.getProgress();
+                svreq.setAVVolume((double) value, new ButtonAction() {
+                    @Override
+                    public void action(String input) {
+                        svreq.getAVVolume(new ButtonAction() {
+                            @Override
+                            public void action(String input) {
+                                String[] volume = input.split("\\.");
+                                updateVolumeBar(Integer.parseInt(volume[0]));
+                            }
+                        });
+                    }
+                });
             }
         });
     }
@@ -260,25 +320,76 @@ public class MainRemote extends Fragment {
                     powerButton.setStatus("On");
                     powerButton.selectButton(getResources()
                             .getColor(R.color.powerbutton));
-                    getInitialValuesHelper();
+                    getInitialValuesHelper(0);
                 }
             }
         });
 
     }
 
-    private void getInitialValuesHelper() {
+    private void getInitialValuesHelper(final int iter) {
         svreq.getAVChannel(new ButtonAction() {
             @Override
             public void action(String input) {
-                if (input.substring(0, 4).equals("HDMI")) {
+                Log.v("Received", input);
+                if (input.substring(0,2).equals("AV")) {
+                    if (iter < 1) {
+                        svreq.setAVChannel("HDMI1", new ButtonAction() {
+                            @Override
+                            public void action(String input) {
+                                getInitialValuesHelper(1);
+                            }
+                        });
+                    } else {
+                        //was unable to switch to HDMI
+                        int inputDev = getResources().getStringArray(R.array.devices_array).length-1;
+                        channelSelect.setSelection(inputDev);
+                        TextView text = ((TextView) rootView.findViewById(R.id.channel_adapter_id));
+                        text.setText(channelSelect.getItemAtPosition(inputDev).toString());
+                    }
+                } else if (input.substring(0, 4).equals("HDMI")) {
                     int inputDev = Integer.parseInt(input.substring(4, 5)) - 1;
                     channelSelect.setSelection(inputDev);
                     TextView text = ((TextView) rootView.findViewById(R.id.channel_adapter_id));
-                    Log.v("Text", text.getText().toString());
+                    text.setText(channelSelect.getItemAtPosition(inputDev).toString());
+                } else if (input.equals("Spotify")) {
+                    int inputDev = getResources().getStringArray(R.array.devices_array).length-2;
+                    channelSelect.setSelection(inputDev);
+                    TextView text = ((TextView) rootView.findViewById(R.id.channel_adapter_id));
                     text.setText(channelSelect.getItemAtPosition(inputDev).toString());
                 }
             }
         });
+
+        svreq.getAVVolume(new ButtonAction() {
+            @Override
+            public void action(String input) {
+                String[] volume = input.split("\\.");
+                updateVolumeBar(Integer.parseInt(volume[0]));
+            }
+        });
+    }
+
+    public void updateVolumeBar(int volume) {
+        volumeBar.showFloater();
+        volumeBar.setProgress(volume);
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    sleep(1000);
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            volumeBar.hideFloater();
+                            return;
+                        }
+                    });
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        thread.start();
     }
 }

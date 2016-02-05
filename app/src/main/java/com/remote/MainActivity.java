@@ -7,6 +7,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -65,7 +66,7 @@ public class MainActivity extends ActionBarActivity implements MainRemote.OnFrag
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
-        powerMenuSetup();
+        volumeMenuSetup();
         setupBackground();
     }
 
@@ -74,7 +75,8 @@ public class MainActivity extends ActionBarActivity implements MainRemote.OnFrag
         // update the main content by replacing fragments
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
-                .replace(R.id.container, ActiveFragment.newInstance(position + 1))
+                .replace(R.id.container, ActiveFragment.newInstance(position + 1),
+                        getResources().getStringArray(R.array.fragments)[position])
                 .commit();
     }
 
@@ -187,7 +189,7 @@ public class MainActivity extends ActionBarActivity implements MainRemote.OnFrag
     /**
      * Sets up the FAB preset menu
      */
-    private void powerMenuSetup() {
+    private void volumeMenuSetup() {
         volume_presets = (FloatingActionMenu) findViewById(R.id.volume_presets);
         highVolume = (FloatingActionButton) findViewById(R.id.highVolume);
         midVolume = (FloatingActionButton) findViewById(R.id.midVolume);
@@ -213,7 +215,7 @@ public class MainActivity extends ActionBarActivity implements MainRemote.OnFrag
                 svreq.setAVVolume(60.0, new ButtonAction() {
                     @Override
                     public void action(String input) {
-                        //write a function to update the volume display
+                        runVolumeUpdate();
                     }
                 });
                 volume_presets.close(true);
@@ -225,7 +227,7 @@ public class MainActivity extends ActionBarActivity implements MainRemote.OnFrag
                 svreq.setAVVolume(40.0, new ButtonAction() {
                     @Override
                     public void action(String input) {
-                        //write a function to update the volume display
+                        runVolumeUpdate();
                     }
                 });
                 volume_presets.close(true);
@@ -237,7 +239,7 @@ public class MainActivity extends ActionBarActivity implements MainRemote.OnFrag
                 svreq.setAVVolume(20.0, new ButtonAction() {
                     @Override
                     public void action(String input) {
-                        //write a function to update the volume display
+                        runVolumeUpdate();
                     }
                 });
                 volume_presets.close(true);
@@ -249,7 +251,7 @@ public class MainActivity extends ActionBarActivity implements MainRemote.OnFrag
                 svreq.setAVMute(new ButtonAction() {
                     @Override
                     public void action(String input) {
-                        //write a function to update the volume display
+                        runVolumeUpdate();
                     }
                 });
                 volume_presets.close(true);
@@ -271,5 +273,19 @@ public class MainActivity extends ActionBarActivity implements MainRemote.OnFrag
                 }
             }
         });
+    }
+    
+    private void runVolumeUpdate() {
+        final Fragment myFragment = getSupportFragmentManager().findFragmentById(R.id.container);
+        if (myFragment != null && myFragment.isVisible() && myFragment.getTag().equals(getResources()
+                .getStringArray(R.array.fragments)[0])) {
+            svreq.getAVVolume(new ButtonAction() {
+                @Override
+                public void action(String input) {
+                    String[] volume = input.split("\\.");
+                    ((MainRemote) myFragment).updateVolumeBar(Integer.parseInt(volume[0]));
+                }
+            });
+        }
     }
 }

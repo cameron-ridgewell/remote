@@ -47,18 +47,13 @@ public interface CommandRequestLibrary {
             @Query("channel") String channel,
             Callback<String> success);
 
-    @POST("/av/?cmd=changeHDMI")
-    public void changeHDMI(
-            @Query("port") String port,
-            Callback<JsonObject> success);
-
     @POST("/av/?cmd=volumeUp")
     public void increaseAVVolume(
-            Callback<JsonObject> success);
+            Callback<String> success);
 
     @POST("/av/?cmd=volumeDown")
     public void decreaseAVVolume(
-            Callback<JsonObject> success);
+            Callback<String> success);
 
     @POST("/av/?cmd=volumeSet")
     public void setAVVolume(@Query("volume") double volume,
@@ -66,6 +61,10 @@ public interface CommandRequestLibrary {
 
     @POST("/av/?cmd=volumeMute")
     public void setAVMute(Callback<String> success);
+
+    @GET("/av/?cmd=getAVVolume")
+    public void getAVVolume(
+            Callback<String> success);
 
     /**
      * CM Commands
